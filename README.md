@@ -102,53 +102,53 @@ API
 Available properties
 --------------------
 
-`headset.`**`device`** - The device path of the dongle on the system.
+`headset.`**device** - The device path of the dongle on the system.
 
-`headset.`**`headset_id`** - The ID of the connected headset.
+`headset.`**headset_id** - The ID of the connected headset.
 
-`headset.`**`poor_signal`** - The "poor signal" reading of the headset connection. This indicates how poorly the headset is reading EEG waves, 0 being the best reading and 255 being the worst. Try readjusting the headset if this value is too high.
+`headset.`**poor_signal** - The "poor signal" reading of the headset connection. This indicates how poorly the headset is reading EEG waves, 0 being the best reading and 255 being the worst. Try readjusting the headset if this value is too high.
 
-`headset.`**`attention`** - The last-read attention value from the headset.
+`headset.`**attention** - The last-read attention value from the headset.
 
-`headset.`**`meditation`** - The last-read meditation value from the headset.
+`headset.`**meditation** - The last-read meditation value from the headset.
 
-`headset.`**`blink`** - The last-read blink strength from the headset.
+`headset.`**blink** - The last-read blink strength from the headset.
 
-`headset.`**`status`** - The current status of the headset: `connected`, `scanning`, or `standby`
+`headset.`**status** - The current status of the headset: `connected`, `scanning`, or `standby`
 
 
 Available methods
 -----------------
 
-`headset.`**`connect`**`([headset_id])` - Connect to the specified headset ID. If no headset was specified, the dongle will auto-connect to the first available.
+`headset.`**connect**`([headset_id])` - Connect to the specified headset ID. If no headset was specified, the dongle will auto-connect to the first available.
 
-`headset.`**`autoconnect`**`()` - Auto-connect to the first available headset, regardless of any headset ID specified.
+`headset.`**autoconnect**`()` - Auto-connect to the first available headset, regardless of any headset ID specified.
 
-`headset.`**`disconnect`**`()` - Disconnect the dongle from the headset.
+`headset.`**disconnect**`()` - Disconnect the dongle from the headset.
 
 
 Event hooks
 -----------
 
-`headset.`**`poor_signal_handlers`**`[]` - Handlers are fired whenever a poor signal is detected. Expects handlers with the prototype `my_function(headset, poor_signal)` and passes in the current headset object and poor signal value.
+`headset.`**poor_signal_handlers**`[]` - Handlers are fired whenever a poor signal is detected. Expects handlers with the prototype `my_function(headset, poor_signal)` and passes in the current headset object and poor signal value.
 
-`headset.`**`good_signal_handlers`**`[]` - Handlers are fired whenever a good signal is detected. Expects handlers with the prototype `my_function(headset, poor_signal)` and passes in the current headset object and poor signal value.
+`headset.`**good_signal_handlers**`[]` - Handlers are fired whenever a good signal is detected. Expects handlers with the prototype `my_function(headset, poor_signal)` and passes in the current headset object and poor signal value.
 
-`headset.`**`attention_handlers`**`[]` - Handlers are fired whenever an attention value is received. Expects handlers with the prototype `my_function(headset, attention)` and passes in the current headset object and attention value.
+`headset.`**attention_handlers**`[]` - Handlers are fired whenever an attention value is received. Expects handlers with the prototype `my_function(headset, attention)` and passes in the current headset object and attention value.
 
-`headset.`**`meditation_handlers`**`[]` - Handlers are fired whenever an meditation value is received. Expects handlers with the prototype `my_function(headset, meditation)` and passes in the current headset object and meditation value.
+`headset.`**meditation_handlers**`[]` - Handlers are fired whenever an meditation value is received. Expects handlers with the prototype `my_function(headset, meditation)` and passes in the current headset object and meditation value.
 
-`headset.`**`blink_handlers`**`[]` - Handlers are fired whenever a blink is detected. Expects handlers with the prototype `my_function(headset, blink_strength)` and passes in the current headset object and blink strength value.
+`headset.`**blink_handlers**`[]` - Handlers are fired whenever a blink is detected. Expects handlers with the prototype `my_function(headset, blink_strength)` and passes in the current headset object and blink strength value.
 
-`headset.`**`connected_handlers`**`[]` - Handlers are fired whenever the headset is connected. Expects handlers with the prototype `my_function(headset)` and passes in the current headset object.
+`headset.`**connected_handlers**`[]` - Handlers are fired whenever the headset is connected. Expects handlers with the prototype `my_function(headset)` and passes in the current headset object.
 
-`headset.`**`notfound_handlers`**`[]` - Handlers are fired whenever the headset specified cannot be found. Expects handlers with the prototype `my_function(headset, not_found_id)` and passes in the current headset object and the headset id that could not be found.
+`headset.`**notfound_handlers**`[]` - Handlers are fired whenever the headset specified cannot be found. Expects handlers with the prototype `my_function(headset, not_found_id)` and passes in the current headset object and the headset id that could not be found.
 
-`headset.`**`disconnected_handlers`**`[]` - Handlers are fired whenever the headset is disconnected. Expects handlers with the prototype `my_function(headset)` and passes in the current headset object.
+`headset.`**disconnected_handlers**`[]` - Handlers are fired whenever the headset is disconnected. Expects handlers with the prototype `my_function(headset)` and passes in the current headset object.
 
-`headset.`**`request_denied_handlers`**`[]` - Handlers are fired whenever a request to the dongle is denied (connect/disconnect/autoconnect). Expects handlers with the prototype `my_function(headset)` and passes in the current headset object.
+`headset.`**request_denied_handlers**`[]` - Handlers are fired whenever a request to the dongle is denied (connect/disconnect/autoconnect). Expects handlers with the prototype `my_function(headset)` and passes in the current headset object.
 
-`headset.`**`scanning_handlers`**`[]` - Handlers are fired whenever the dongle begins scanning for a headset. Expects handlers with the prototype `my_function(headset)` and passes in the current headset object.
+`headset.`**scanning_handlers**`[]` - Handlers are fired whenever the dongle begins scanning for a headset. Expects handlers with the prototype `my_function(headset)` and passes in the current headset object.
 
-`headset.`**`standby_handlers`**`[]` - Handlers are fired whenever the dongle goes into standby (not connected to a headset). Expects handlers with the prototype `my_function(headset)` and passes in the current headset object.
+`headset.`**standby_handlers**`[]` - Handlers are fired whenever the dongle goes into standby (not connected to a headset). Expects handlers with the prototype `my_function(headset)` and passes in the current headset object.
 
