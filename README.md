@@ -36,7 +36,7 @@ It's recommended to wait at least a couple seconds before connecting the dongle 
     while True:
         print "Attention: %s, Meditation: %s" % (headset.attention, headset.meditation)
 
-For the MindWave Mobile bluetooth headsets, it's unnecessary to use the `connect()` or `disconnect()` methods. If your operating system automatically creates a serial port for the bluetooth device, there's also no need to specify a headset ID. Just pass the serial device path as a parameter when you create a new `Headset` object.
+For the MindWave Mobile bluetooth headsets, it's unnecessary to use the `connect()` or `disconnect()` methods. If your operating system automatically creates a serial port for the bluetooth device, there's also no need to specify a headset ID. Just pass the serial device path as a parameter when you create a new `Headset` object and you're good to go.
 
 
 Auto-connect
