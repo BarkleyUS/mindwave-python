@@ -1,4 +1,4 @@
-import serial, threading
+import select, serial, threading
 
 # Byte codes
 CONNECT              = '\xc0'
@@ -48,27 +48,30 @@ class Headset(object):
 
             while True:
                 # Begin listening for packets
-                if s.read() == SYNC and s.read() == SYNC:
-                    # Packet found, determine plength
-                    while True:
-                        plength = ord(s.read())
-                        if plength != 170:
-                            break
-                    if plength > 170:
-                        continue
+                try:
+                    if s.read() == SYNC and s.read() == SYNC:
+                        # Packet found, determine plength
+                        while True:
+                            plength = ord(s.read())
+                            if plength != 170:
+                                break
+                        if plength > 170:
+                            continue
 
-                    # Read in the payload
-                    payload = s.read(plength)
+                        # Read in the payload
+                        payload = s.read(plength)
 
-                    # Verify its checksum
-                    val = sum(ord(b) for b in payload[:-1])
-                    val &= 0xff
-                    val = ~val & 0xff
-                    chksum = ord(s.read())
+                        # Verify its checksum
+                        val = sum(ord(b) for b in payload[:-1])
+                        val &= 0xff
+                        val = ~val & 0xff
+                        chksum = ord(s.read())
 
-                    #if val == chksum:
-                    if True: # ignore bad checksums
-                        self.parse_payload(payload)
+                        #if val == chksum:
+                        if True: # ignore bad checksums
+                            self.parse_payload(payload)
+                except (select.error, OSError):
+                    break
 
         def parse_payload(self, payload):
             """Parse the payload to determine an action."""
@@ -130,8 +133,8 @@ class Headset(object):
                     except IndexError:
                         continue
                     value, payload = payload[:vlength], payload[vlength:]
-                    # Multi-byte EEG and Raw Wave codes not included currently
-                    # See Mindset Communications Protocol to extend this code
+                    # Multi-byte EEG and Raw Wave codes not included
+                    # See Mindset Communications Protocol
                     if code == HEADSET_CONNECTED:
                         # Headset connect success
                         run_handlers = self.headset.status != STATUS_CONNECTED
@@ -184,12 +187,11 @@ class Headset(object):
                                     handler(self.headset)
 
 
-    def __init__(self, device, headset_id=None):
+    def __init__(self, device, headset_id=None, open_serial=True):
         """Initialize the  headset."""
-        # Establish serial connection to the dongle
-        self.dongle = serial.Serial(device, 115200)
-
         # Initialize headset values
+        self.dongle = None
+        self.listener = None
         self.device = device
         self.headset_id = headset_id
         self.poor_signal = 255
@@ -211,10 +213,9 @@ class Headset(object):
         self.scanning_handlers = []
         self.standby_handlers = []
 
-        # Begin listening to the serial device
-        self.listener = self.DongleListener(self)
-        self.listener.daemon = True
-        self.listener.start()
+        # Open the socket
+        if open_serial:
+            self.serial_open()
 
     def connect(self, headset_id=None):
         """Connect to the specified headset id."""
@@ -234,3 +235,19 @@ class Headset(object):
     def disconnect(self):
         """Disconnect the device from the headset."""
         self.dongle.write(DISCONNECT)
+
+    def serial_open(self):
+        """Open the serial connection and begin listening for data."""
+        # Establish serial connection to the dongle
+        if not self.dongle or not self.dongle.isOpen():
+            self.dongle = serial.Serial(self.device, 115200)
+
+        # Begin listening to the serial device
+        if not self.listener or not self.listener.isAlive():
+            self.listener = self.DongleListener(self)
+            self.listener.daemon = True
+            self.listener.start()
+
+    def serial_close(self):
+        """Close the serial connection."""
+        self.dongle.close()
