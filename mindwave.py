@@ -72,6 +72,9 @@ class Headset(object):
                             self.parse_payload(payload)
                 except (select.error, OSError):
                     break
+                except serial.SerialException:
+                    s.close()
+                    break
 
         def parse_payload(self, payload):
             """Parse the payload to determine an action."""
