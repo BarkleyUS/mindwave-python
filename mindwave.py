@@ -15,6 +15,7 @@ HEADSET_NOT_FOUND    = '\xd1'
 HEADSET_DISCONNECTED = '\xd2'
 REQUEST_DENIED       = '\xd3'
 STANDBY_SCAN         = '\xd4'
+RAW_VALUE            = '\x80'
 
 # Status codes
 STATUS_CONNECTED     = 'connected'
@@ -137,7 +138,14 @@ class Headset(object):
                         continue
                     value, payload = payload[:vlength], payload[vlength:]
                     # Multi-byte EEG and Raw Wave codes not included
-                    # See Mindset Communications Protocol
+                    # Raw Value added due to Mindset Communications Protocol
+                    if code == RAW_VALUE:
+                        raw=ord(value[0])*256+ord(value[1])
+                        if (raw>=32768):
+                            raw=raw-65536
+                        self.headset.raw_value = raw
+                        for handler in self.headset.raw_value_handlers:
+                            handler(self.headset, self.headset.raw_value)
                     if code == HEADSET_CONNECTED:
                         # Headset connect success
                         run_handlers = self.headset.status != STATUS_CONNECTED
@@ -201,6 +209,7 @@ class Headset(object):
         self.attention = 0
         self.meditation = 0
         self.blink = 0
+        self.raw_value = 0
         self.status = None
 
         # Create event handler lists
@@ -209,6 +218,7 @@ class Headset(object):
         self.attention_handlers = []
         self.meditation_handlers = []
         self.blink_handlers = []
+        self.raw_value_handlers = []
         self.headset_connected_handlers = []
         self.headset_notfound_handlers = []
         self.headset_disconnected_handlers = []
